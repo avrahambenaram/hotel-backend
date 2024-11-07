@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	configuration.Setup()
 	server := http.NewServeMux()
 
 	log.Printf("Server running on port %d\n", configuration.Server.Port)

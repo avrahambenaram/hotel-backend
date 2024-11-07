@@ -11,7 +11,7 @@ var (
 	Server   ServerConfig
 )
 
-func init() {
+func Setup() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("toml")
 	viper.AddConfigPath(".")
