@@ -10,5 +10,5 @@ type Reservation struct {
 	ClientID uint
 
 	Room   HotelRoom `json:"room"`
-	Client `json:"client"`
+	Client Client    `json:"client"`
 }
