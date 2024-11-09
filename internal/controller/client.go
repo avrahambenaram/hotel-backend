@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/avrahambenaram/hotel-backend/internal/entity"
 	"github.com/avrahambenaram/hotel-backend/internal/middleware"
@@ -22,6 +23,14 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 	}
 
 	mux.Handle(
+		"GET /id/{ID}",
+		http.HandlerFunc(clientController.findByID),
+	)
+	mux.Handle(
+		"GET /cpf/{CPF}",
+		http.HandlerFunc(clientController.findByCPF),
+	)
+	mux.Handle(
 		"POST /add",
 		middleware.ParseBody(
 			http.HandlerFunc(clientController.addClient),
@@ -30,6 +39,35 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 	)
 
 	return clientController
+}
+
+func (c *ClientController) findByID(w http.ResponseWriter, r *http.Request) {
+	idStr := r.PathValue("ID")
+	id, idErr := strconv.Atoi(idStr)
+	if idErr != nil {
+		http.Error(w, "ID must be an integer", 403)
+	}
+
+	client, err := c.clientModel.FindByID(uint(id))
+	if err != nil {
+		http.Error(w, err.Message, int(err.Status))
+		return
+	}
+
+	ctx := context.WithValue(r.Context(), "json", client)
+	*r = *r.WithContext(ctx)
+}
+
+func (c *ClientController) findByCPF(w http.ResponseWriter, r *http.Request) {
+	cpf := r.PathValue("CPF")
+	client, err := c.clientModel.FindByCPF(cpf)
+	if err != nil {
+		http.Error(w, err.Message, int(err.Status))
+		return
+	}
+
+	ctx := context.WithValue(r.Context(), "json", client)
+	*r = *r.WithContext(ctx)
 }
 
 func (c *ClientController) addClient(w http.ResponseWriter, r *http.Request) {
