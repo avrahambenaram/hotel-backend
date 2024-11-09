@@ -37,6 +37,13 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 			entity.Client{},
 		),
 	)
+	mux.Handle(
+		"PUT /update",
+		middleware.ParseBody(
+			http.HandlerFunc(clientController.update),
+			entity.Client{},
+		),
+	)
 
 	return clientController
 }
@@ -73,6 +80,18 @@ func (c *ClientController) findByCPF(w http.ResponseWriter, r *http.Request) {
 func (c *ClientController) addClient(w http.ResponseWriter, r *http.Request) {
 	client := r.Context().Value("client").(entity.Client)
 	clientCreated, err := c.clientModel.Save(client)
+	if err != nil {
+		http.Error(w, err.Message, int(err.Status))
+		return
+	}
+
+	ctx := context.WithValue(r.Context(), "json", clientCreated)
+	*r = *r.WithContext(ctx)
+}
+
+func (c *ClientController) update(w http.ResponseWriter, r *http.Request) {
+	client := r.Context().Value("client").(entity.Client)
+	clientCreated, err := c.clientModel.Update(client)
 	if err != nil {
 		http.Error(w, err.Message, int(err.Status))
 		return
