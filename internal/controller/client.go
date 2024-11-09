@@ -25,6 +25,7 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 		"POST /add",
 		middleware.ParseBody(
 			http.HandlerFunc(clientController.addClient),
+			entity.Client{},
 		),
 	)
 

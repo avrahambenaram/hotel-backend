@@ -4,11 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-
-	"github.com/avrahambenaram/hotel-backend/internal/entity"
 )
 
-func ParseBody(next http.Handler) http.Handler {
+func ParseBody[T any](next http.Handler, v T) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		contentType := r.Header.Get("Content-Type")
 		if contentType != "application/json" {
@@ -16,15 +14,14 @@ func ParseBody(next http.Handler) http.Handler {
 			return
 		}
 
-		product := entity.Client{}
 		decoder := json.NewDecoder(r.Body)
-		if err := decoder.Decode(&product); err != nil {
-			http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		if err := decoder.Decode(&v); err != nil {
+			http.Error(w, "", http.StatusBadRequest)
 			return
 		}
 		defer r.Body.Close()
 
-		ctx := context.WithValue(r.Context(), "client", product)
+		ctx := context.WithValue(r.Context(), "client", v)
 		*r = *r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
