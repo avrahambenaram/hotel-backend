@@ -2,10 +2,10 @@ package exception
 
 type Exception struct {
 	Message string
-	Status  uint
+	Status  int
 }
 
-func New(message string, status uint) *Exception {
+func New(message string, status int) *Exception {
 	return &Exception{
 		message,
 		status,

@@ -44,6 +44,10 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 			entity.Client{},
 		),
 	)
+	mux.Handle(
+		"DELETE /{ID}",
+		http.HandlerFunc(clientController.delete),
+	)
 
 	return clientController
 }
@@ -57,7 +61,7 @@ func (c *ClientController) findByID(w http.ResponseWriter, r *http.Request) {
 
 	client, err := c.clientModel.FindByID(uint(id))
 	if err != nil {
-		http.Error(w, err.Message, int(err.Status))
+		http.Error(w, err.Message, err.Status)
 		return
 	}
 
@@ -69,7 +73,7 @@ func (c *ClientController) findByCPF(w http.ResponseWriter, r *http.Request) {
 	cpf := r.PathValue("CPF")
 	client, err := c.clientModel.FindByCPF(cpf)
 	if err != nil {
-		http.Error(w, err.Message, int(err.Status))
+		http.Error(w, err.Message, err.Status)
 		return
 	}
 
@@ -81,7 +85,7 @@ func (c *ClientController) addClient(w http.ResponseWriter, r *http.Request) {
 	client := r.Context().Value("client").(entity.Client)
 	clientCreated, err := c.clientModel.Save(client)
 	if err != nil {
-		http.Error(w, err.Message, int(err.Status))
+		http.Error(w, err.Message, err.Status)
 		return
 	}
 
@@ -93,10 +97,26 @@ func (c *ClientController) update(w http.ResponseWriter, r *http.Request) {
 	client := r.Context().Value("client").(entity.Client)
 	clientCreated, err := c.clientModel.Update(client)
 	if err != nil {
-		http.Error(w, err.Message, int(err.Status))
+		http.Error(w, err.Message, err.Status)
 		return
 	}
 
 	ctx := context.WithValue(r.Context(), "json", clientCreated)
 	*r = *r.WithContext(ctx)
+}
+
+func (c *ClientController) delete(w http.ResponseWriter, r *http.Request) {
+	idStr := r.PathValue("ID")
+	id, idErr := strconv.Atoi(idStr)
+	if idErr != nil {
+		http.Error(w, "ID must be an integer", 403)
+	}
+
+	errDelete := c.clientModel.Delete(uint(id))
+	if errDelete != nil {
+		http.Error(w, errDelete.Message, errDelete.Status)
+		return
+	}
+
+	w.WriteHeader(204)
 }
