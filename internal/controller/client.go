@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"net/http"
-	"strconv"
 
 	"github.com/avrahambenaram/hotel-backend/internal/entity"
 	"github.com/avrahambenaram/hotel-backend/internal/middleware"
@@ -24,7 +23,9 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 
 	mux.Handle(
 		"GET /id/{ID}",
-		http.HandlerFunc(clientController.findByID),
+		middleware.GetId(
+			http.HandlerFunc(clientController.findByID),
+		),
 	)
 	mux.Handle(
 		"GET /cpf/{CPF}",
@@ -46,20 +47,18 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 	)
 	mux.Handle(
 		"DELETE /{ID}",
-		http.HandlerFunc(clientController.delete),
+		middleware.GetId(
+			http.HandlerFunc(clientController.delete),
+		),
 	)
 
 	return clientController
 }
 
 func (c *ClientController) findByID(w http.ResponseWriter, r *http.Request) {
-	idStr := r.PathValue("ID")
-	id, idErr := strconv.Atoi(idStr)
-	if idErr != nil {
-		http.Error(w, "ID must be an integer", 403)
-	}
+	id := r.Context().Value("id").(uint)
 
-	client, err := c.clientModel.FindByID(uint(id))
+	client, err := c.clientModel.FindByID(id)
 	if err != nil {
 		http.Error(w, err.Message, err.Status)
 		return
@@ -106,13 +105,9 @@ func (c *ClientController) update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *ClientController) delete(w http.ResponseWriter, r *http.Request) {
-	idStr := r.PathValue("ID")
-	id, idErr := strconv.Atoi(idStr)
-	if idErr != nil {
-		http.Error(w, "ID must be an integer", 403)
-	}
+	id := r.Context().Value("id").(uint)
 
-	errDelete := c.clientModel.Delete(uint(id))
+	errDelete := c.clientModel.Delete(id)
 	if errDelete != nil {
 		http.Error(w, errDelete.Message, errDelete.Status)
 		return
