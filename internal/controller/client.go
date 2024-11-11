@@ -81,7 +81,7 @@ func (c *ClientController) findByCPF(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *ClientController) addClient(w http.ResponseWriter, r *http.Request) {
-	client := r.Context().Value("client").(entity.Client)
+	client := r.Context().Value("body").(entity.Client)
 	clientCreated, err := c.clientModel.Save(client)
 	if err != nil {
 		http.Error(w, err.Message, err.Status)
@@ -93,7 +93,7 @@ func (c *ClientController) addClient(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *ClientController) update(w http.ResponseWriter, r *http.Request) {
-	client := r.Context().Value("client").(entity.Client)
+	client := r.Context().Value("body").(entity.Client)
 	clientCreated, err := c.clientModel.Update(client)
 	if err != nil {
 		http.Error(w, err.Message, err.Status)

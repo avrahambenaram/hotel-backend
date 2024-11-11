@@ -21,7 +21,7 @@ func ParseBody[T any](next http.Handler, v T) http.Handler {
 		}
 		defer r.Body.Close()
 
-		ctx := context.WithValue(r.Context(), "client", v)
+		ctx := context.WithValue(r.Context(), "body", v)
 		*r = *r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
