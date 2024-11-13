@@ -21,7 +21,12 @@ func main() {
 	clientModel := model.NewClientModel(clientRepository)
 	clientController := controller.NewClientController(clientModel)
 
+	roomRepository := &repository.RoomRepository{}
+	roomModel := model.NewRoomModel(roomRepository)
+	roomController := controller.NewRoomController(roomModel)
+
 	server.Handle("/client/", http.StripPrefix("/client", clientController.Handler))
+	server.Handle("/room/", http.StripPrefix("/room", roomController.Handler))
 
 	log.Printf("Server running on port %d\n", configuration.Server.Port)
 	http.ListenAndServe(fmt.Sprintf(":%d", configuration.Server.Port), server)
