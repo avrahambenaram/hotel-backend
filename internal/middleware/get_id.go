@@ -17,5 +17,6 @@ func GetId(next http.Handler) http.Handler {
 
 		ctx := context.WithValue(r.Context(), "id", uint(id))
 		*r = *r.WithContext(ctx)
+		next.ServeHTTP(w, r)
 	})
 }
