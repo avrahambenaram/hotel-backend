@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/avrahambenaram/hotel-backend/internal/entity"
 	"github.com/avrahambenaram/hotel-backend/internal/exception"
 )
@@ -34,13 +36,13 @@ func (c ReservationRepository) FindByRoom(roomID uint) []entity.Reservation {
 	return reservations
 }
 
-func (c ReservationRepository) Update(reservation entity.Reservation) *exception.Exception {
-	_, err := c.FindByID(reservation.ID)
-	if err != nil {
-		return err
+func (c ReservationRepository) FindByRoomAndTime(roomID uint, when time.Time) (entity.Reservation, *exception.Exception) {
+	var reservation entity.Reservation
+	entity.DB.Preload("Room").Preload("Client").Where("? > CheckIn AND ? < CheckOut", when, when).Find(&reservation)
+	if reservation.CheckIn.IsZero() {
+		return reservation, exception.New("Reserva não encontrada", 404)
 	}
-	entity.DB.Save(&reservation)
-	return nil
+	return reservation, nil
 }
 
 func (c ReservationRepository) Save(reservation entity.Reservation) *exception.Exception {
