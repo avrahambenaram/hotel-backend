@@ -22,6 +22,10 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 	}
 
 	mux.Handle(
+		"GET /{$}",
+		http.HandlerFunc(clientController.findAll),
+	)
+	mux.Handle(
 		"GET /id/{ID}",
 		middleware.GetId(
 			http.HandlerFunc(clientController.findByID),
@@ -53,6 +57,13 @@ func NewClientController(clientModel *model.ClientModel) *ClientController {
 	)
 
 	return clientController
+}
+
+func (c *ClientController) findAll(w http.ResponseWriter, r *http.Request) {
+	clients := c.clientModel.FindAll()
+
+	ctx := context.WithValue(r.Context(), "json", clients)
+	*r = *r.WithContext(ctx)
 }
 
 func (c *ClientController) findByID(w http.ResponseWriter, r *http.Request) {

@@ -7,6 +7,12 @@ import (
 
 type ClientRepository struct{}
 
+func (c ClientRepository) FindAll() []entity.Client {
+	clients := []entity.Client{}
+	entity.DB.Find(&clients)
+	return clients
+}
+
 func (c ClientRepository) FindByID(id uint) (entity.Client, *exception.Exception) {
 	client := entity.Client{}
 	entity.DB.Where("ID = ?", id).Find(&client)

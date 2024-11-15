@@ -17,6 +17,10 @@ func NewClientModel(clientRepository *repository.ClientRepository) *ClientModel 
 	}
 }
 
+func (c *ClientModel) FindAll() []entity.Client {
+	return c.clientRepository.FindAll()
+}
+
 func (c *ClientModel) FindByID(id uint) (entity.Client, *exception.Exception) {
 	return c.clientRepository.FindByID(id)
 }
