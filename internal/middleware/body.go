@@ -16,7 +16,7 @@ func ParseBody[T any](next http.Handler, v T) http.Handler {
 
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&v); err != nil {
-			http.Error(w, "", http.StatusBadRequest)
+			http.Error(w, "Erro no json", http.StatusBadRequest)
 			return
 		}
 		defer r.Body.Close()
