@@ -60,7 +60,9 @@ func (c *ClientModel) Save(client entity.Client) (entity.Client, *exception.Exce
 		return client, err
 	}
 
-	return client, nil
+	clientSaved, _ := c.clientRepository.FindByCPF(client.CPF)
+
+	return clientSaved, nil
 }
 
 func (c *ClientModel) Delete(id uint) *exception.Exception {
