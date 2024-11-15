@@ -20,25 +20,25 @@ func (c ReservationRepository) FindByID(id uint) (entity.Reservation, *exception
 
 func (c ReservationRepository) FindByClientAndRoom(clientID uint, roomID uint) []entity.Reservation {
 	reservations := []entity.Reservation{}
-	entity.DB.Where("clientID = ? AND roomID = ?", clientID, roomID).Find(&reservations)
+	entity.DB.Where("client_id = ? AND room_id = ?", clientID, roomID).Find(&reservations)
 	return reservations
 }
 
 func (c ReservationRepository) FindByClient(clientID uint) []entity.Reservation {
 	reservations := []entity.Reservation{}
-	entity.DB.Preload("Room").Preload("Client").Where("clientID = ?", clientID).Find(&reservations)
+	entity.DB.Preload("Room").Preload("Client").Where("client_id = ?", clientID).Find(&reservations)
 	return reservations
 }
 
 func (c ReservationRepository) FindByRoom(roomID uint) []entity.Reservation {
 	reservations := []entity.Reservation{}
-	entity.DB.Where("roomID = ?", roomID).Find(&reservations)
+	entity.DB.Where("room_id = ?", roomID).Find(&reservations)
 	return reservations
 }
 
 func (c ReservationRepository) FindByRoomAndTime(roomID uint, when time.Time) (entity.Reservation, *exception.Exception) {
 	var reservation entity.Reservation
-	entity.DB.Preload("Room").Preload("Client").Where("? > CheckIn AND ? < CheckOut", when, when).Find(&reservation)
+	entity.DB.Preload("Room").Preload("Client").Where("room_id = ? AND ? >= check_in AND ? <= check_out", roomID, when, when).Find(&reservation)
 	if reservation.CheckIn.IsZero() {
 		return reservation, exception.New("Reserva não encontrada", 404)
 	}
