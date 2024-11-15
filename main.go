@@ -25,8 +25,13 @@ func main() {
 	roomModel := model.NewRoomModel(roomRepository)
 	roomController := controller.NewRoomController(roomModel)
 
+	reservationRepository := &repository.ReservationRepository{}
+	reservationModel := model.NewReservationModel(reservationRepository)
+	reservationController := controller.NewReservationController(reservationModel)
+
 	server.Handle("/client/", http.StripPrefix("/client", clientController.Handler))
 	server.Handle("/room/", http.StripPrefix("/room", roomController.Handler))
+	server.Handle("/reservation/", http.StripPrefix("/reservation", reservationController.Handler))
 
 	log.Printf("Server running on port %d\n", configuration.Server.Port)
 	http.ListenAndServe(fmt.Sprintf(":%d", configuration.Server.Port), server)
