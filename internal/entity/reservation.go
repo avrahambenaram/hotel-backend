@@ -9,6 +9,6 @@ type Reservation struct {
 	RoomID   uint      `json:"roomId"`
 	ClientID uint      `json:"clientId"`
 
-	Room   HotelRoom `json:"room"`
-	Client Client    `json:"client"`
+	Room   *HotelRoom `json:"room"`
+	Client *Client    `json:"client"`
 }
