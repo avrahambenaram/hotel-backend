@@ -105,7 +105,10 @@ func (c *ReservationController) query(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Error(w, "Insira um id ou do cliente ou do quarto", http.StatusForbidden)
+	reservations := c.reservationModel.FindAll()
+
+	ctx := context.WithValue(r.Context(), "json", reservations)
+	*r = *r.WithContext(ctx)
 }
 
 func (c *ReservationController) addReservation(w http.ResponseWriter, r *http.Request) {

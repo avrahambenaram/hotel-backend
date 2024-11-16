@@ -16,6 +16,10 @@ func NewReservationModel(reservationRepository *repository.ReservationRepository
 	}
 }
 
+func (c *ReservationModel) FindAll() []entity.Reservation {
+	return c.reservationRepository.FindAll()
+}
+
 func (c *ReservationModel) FindByID(id uint) (entity.Reservation, *exception.Exception) {
 	return c.reservationRepository.FindByID(id)
 }

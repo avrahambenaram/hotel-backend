@@ -9,6 +9,12 @@ import (
 
 type ReservationRepository struct{}
 
+func (c ReservationRepository) FindAll() []entity.Reservation {
+	reservations := []entity.Reservation{}
+	entity.DB.Find(&reservations)
+	return reservations
+}
+
 func (c ReservationRepository) FindByID(id uint) (entity.Reservation, *exception.Exception) {
 	var reservation entity.Reservation
 	entity.DB.Preload("Room").Preload("Client").First(&reservation, id)
