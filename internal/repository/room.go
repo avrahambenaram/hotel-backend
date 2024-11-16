@@ -7,6 +7,12 @@ import (
 
 type RoomRepository struct{}
 
+func (c RoomRepository) FindAll() []entity.HotelRoom {
+	rooms := []entity.HotelRoom{}
+	entity.DB.Find(&rooms)
+	return rooms
+}
+
 func (c RoomRepository) FindByID(id uint) (entity.HotelRoom, *exception.Exception) {
 	room := entity.HotelRoom{}
 	entity.DB.Where("ID = ?", id).Find(&room)

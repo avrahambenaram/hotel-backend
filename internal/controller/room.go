@@ -23,6 +23,10 @@ func NewRoomController(roomModel *model.RoomModel) *RoomController {
 	}
 
 	mux.Handle(
+		"GET /{$}",
+		http.HandlerFunc(roomController.findAll),
+	)
+	mux.Handle(
 		"GET /id/{ID}",
 		middleware.GetId(
 			http.HandlerFunc(roomController.findByID),
@@ -58,6 +62,13 @@ func NewRoomController(roomModel *model.RoomModel) *RoomController {
 	)
 
 	return roomController
+}
+
+func (c *RoomController) findAll(w http.ResponseWriter, r *http.Request) {
+	rooms := c.roomModel.FindAll()
+
+	ctx := context.WithValue(r.Context(), "json", rooms)
+	*r = *r.WithContext(ctx)
 }
 
 func (c *RoomController) findByID(w http.ResponseWriter, r *http.Request) {

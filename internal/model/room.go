@@ -16,6 +16,10 @@ func NewRoomModel(roomRepository *repository.RoomRepository) *RoomModel {
 	}
 }
 
+func (c *RoomModel) FindAll() []entity.HotelRoom {
+	return c.roomRepository.FindAll()
+}
+
 func (c *RoomModel) FindByID(id uint) (entity.HotelRoom, *exception.Exception) {
 	return c.roomRepository.FindByID(id)
 }
