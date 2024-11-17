@@ -8,10 +8,10 @@ import (
 )
 
 type ClientModel struct {
-	clientRepository *repository.ClientRepository
+	clientRepository repository.ClientRepository
 }
 
-func NewClientModel(clientRepository *repository.ClientRepository) *ClientModel {
+func NewClientModel(clientRepository repository.ClientRepository) *ClientModel {
 	return &ClientModel{
 		clientRepository,
 	}

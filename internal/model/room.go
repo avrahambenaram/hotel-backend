@@ -7,10 +7,10 @@ import (
 )
 
 type RoomModel struct {
-	roomRepository *repository.RoomRepository
+	roomRepository repository.RoomRepository
 }
 
-func NewRoomModel(roomRepository *repository.RoomRepository) *RoomModel {
+func NewRoomModel(roomRepository repository.RoomRepository) *RoomModel {
 	return &RoomModel{
 		roomRepository,
 	}

@@ -7,10 +7,10 @@ import (
 )
 
 type ReservationModel struct {
-	reservationRepository *repository.ReservationRepository
+	reservationRepository repository.ReservationRepository
 }
 
-func NewReservationModel(reservationRepository *repository.ReservationRepository) *ReservationModel {
+func NewReservationModel(reservationRepository repository.ReservationRepository) *ReservationModel {
 	return &ReservationModel{
 		reservationRepository,
 	}

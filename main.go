@@ -9,7 +9,7 @@ import (
 	"github.com/avrahambenaram/hotel-backend/internal/controller"
 	"github.com/avrahambenaram/hotel-backend/internal/entity"
 	"github.com/avrahambenaram/hotel-backend/internal/model"
-	"github.com/avrahambenaram/hotel-backend/internal/repository"
+	repositoryImp "github.com/avrahambenaram/hotel-backend/internal/repository/implementation"
 )
 
 func main() {
@@ -17,15 +17,15 @@ func main() {
 	entity.Setup()
 	server := http.NewServeMux()
 
-	clientRepository := &repository.ClientRepository{}
+	clientRepository := &repositoryImp.ClientRepository{}
 	clientModel := model.NewClientModel(clientRepository)
 	clientController := controller.NewClientController(clientModel)
 
-	roomRepository := &repository.RoomRepository{}
+	roomRepository := &repositoryImp.RoomRepository{}
 	roomModel := model.NewRoomModel(roomRepository)
 	roomController := controller.NewRoomController(roomModel)
 
-	reservationRepository := &repository.ReservationRepository{}
+	reservationRepository := &repositoryImp.ReservationRepository{}
 	reservationModel := model.NewReservationModel(reservationRepository)
 	reservationController := controller.NewReservationController(reservationModel)
 
