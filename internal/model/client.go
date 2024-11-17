@@ -25,8 +25,8 @@ func (c *ClientModel) FindByID(id uint) (entity.Client, *exception.Exception) {
 	return c.clientRepository.FindByID(id)
 }
 
-func (c *ClientModel) FindByCPF(email string) (entity.Client, *exception.Exception) {
-	return c.clientRepository.FindByCPF(email)
+func (c *ClientModel) FindByCPF(cpf string) (entity.Client, *exception.Exception) {
+	return c.clientRepository.FindByCPF(cpf)
 }
 
 func (c *ClientModel) Update(client entity.Client) (entity.Client, *exception.Exception) {
