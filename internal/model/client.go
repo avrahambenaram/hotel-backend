@@ -30,7 +30,7 @@ func (c *ClientModel) FindByCPF(cpf string) (entity.Client, *exception.Exception
 }
 
 func (c *ClientModel) Update(client entity.Client) (entity.Client, *exception.Exception) {
-	_, err := c.FindByID(client.ID)
+	clientFound, err := c.FindByID(client.ID)
 	if err != nil {
 		return client, err
 	}
@@ -38,6 +38,13 @@ func (c *ClientModel) Update(client entity.Client) (entity.Client, *exception.Ex
 	errFields := service.Validate.Struct(client)
 	if errFields != nil {
 		return client, exception.New("Campo(s) inválidos", 403)
+	}
+
+	if client.CPF != clientFound.CPF {
+		_, err := c.FindByCPF(client.CPF)
+		if err == nil {
+			return client, exception.New("CPF já utilizado", 409)
+		}
 	}
 
 	errUpdate := c.clientRepository.Update(client)
