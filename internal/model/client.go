@@ -56,7 +56,7 @@ func (c *ClientModel) Save(client entity.Client) (entity.Client, *exception.Exce
 
 	clientExists, _ := c.clientRepository.FindByCPF(client.CPF)
 	if clientExists.CPF == client.CPF {
-		return client, exception.New("CPF de cliente já cadastrado", 403)
+		return client, exception.New("CPF de cliente já cadastrado", 409)
 	}
 
 	err := c.clientRepository.Save(client)
