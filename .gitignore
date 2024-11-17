@@ -1,3 +1,5 @@
 config.toml
+coverage.out
+coverage.html
 mysql/
 tmp/
