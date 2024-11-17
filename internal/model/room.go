@@ -43,7 +43,7 @@ func (c *RoomModel) Update(room entity.HotelRoom) (entity.HotelRoom, *exception.
 	}
 
 	roomNumberUsed, _ := c.roomRepository.FindByNumber(room.Number)
-	if roomNumberUsed.Capacity != 0 {
+	if roomNumberUsed.Capacity != 0 && roomNumberUsed.ID != room.ID {
 		return entity.HotelRoom{}, exception.New("Número de quarto já usado", 403)
 	}
 
