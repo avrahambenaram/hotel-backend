@@ -1,0 +1,4 @@
+#!/bin/sh
+go test -cover -v ./internal/... -coverprofile=coverage.out
+go tool cover -html=coverage.out -o coverage.html
+rm coverage.out
