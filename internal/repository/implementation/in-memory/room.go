@@ -46,7 +46,7 @@ func (c RoomRepository) FindByNumber(number int) (entity.HotelRoom, *exception.E
 func (c *RoomRepository) Update(room entity.HotelRoom) *exception.Exception {
 	for i, current := range c.rooms {
 		if current.ID == room.ID {
-			c.rooms[i] = current
+			c.rooms[i] = room
 			return nil
 		}
 	}
