@@ -60,7 +60,7 @@ func (c ReservationRepository) FindByRoomAndTime(roomID uint, when time.Time) (e
 	for _, reservation := range c.reservations {
 		checkInUnix := reservation.CheckIn.Unix()
 		checkOutUnix := reservation.CheckOut.Unix()
-		if reservation.ID == roomID && whenUnix > checkInUnix && whenUnix < checkOutUnix {
+		if reservation.RoomID == roomID && whenUnix >= checkInUnix && whenUnix <= checkOutUnix {
 			return reservation, nil
 		}
 	}
