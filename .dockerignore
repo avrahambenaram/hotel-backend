@@ -1,0 +1,10 @@
+.git/
+mysql/
+tmp/
+.air.toml
+.gitignore
+config.toml.example
+coverage.html
+flake.lock
+flake.nix
+shell.nix

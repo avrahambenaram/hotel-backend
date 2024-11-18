@@ -1,5 +1,6 @@
 config.toml
 coverage.out
 coverage.html
+db/
 mysql/
 tmp/
