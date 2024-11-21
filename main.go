@@ -10,6 +10,7 @@ import (
 	"github.com/avrahambenaram/hotel-backend/internal/entity"
 	"github.com/avrahambenaram/hotel-backend/internal/model"
 	repositoryImp "github.com/avrahambenaram/hotel-backend/internal/repository/implementation"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -33,6 +34,12 @@ func main() {
 	server.Handle("/room/", http.StripPrefix("/room", roomController.Handler))
 	server.Handle("/reservation/", http.StripPrefix("/reservation", reservationController.Handler))
 
+	corsSetup := cors.New(cors.Options{
+		AllowedHeaders: []string{"*"},
+		AllowedMethods: []string{"HEAD", "GET", "POST", "PUT", "DELETE"},
+	})
+	allowedServer := corsSetup.Handler(server)
+
 	log.Printf("Server running on port %d\n", configuration.Server.Port)
-	http.ListenAndServe(fmt.Sprintf(":%d", configuration.Server.Port), server)
+	http.ListenAndServe(fmt.Sprintf(":%d", configuration.Server.Port), allowedServer)
 }

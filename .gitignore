@@ -2,5 +2,6 @@ config.toml
 coverage.out
 coverage.html
 db/
+mysql/
 nix/mysql/
 tmp/
