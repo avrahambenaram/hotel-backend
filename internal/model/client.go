@@ -1,10 +1,13 @@
 package model
 
 import (
+	"fmt"
+
 	"github.com/avrahambenaram/hotel-backend/internal/entity"
 	"github.com/avrahambenaram/hotel-backend/internal/exception"
 	"github.com/avrahambenaram/hotel-backend/internal/repository"
 	"github.com/avrahambenaram/hotel-backend/internal/service"
+	"github.com/go-playground/validator"
 )
 
 type ClientModel struct {
@@ -41,7 +44,12 @@ func (c *ClientModel) Update(client entity.Client) (entity.Client, *exception.Ex
 
 	errFields := service.Validate.Struct(client)
 	if errFields != nil {
-		return client, exception.New("Campo(s) inválidos", 403)
+		if validationErrors, ok := errFields.(validator.ValidationErrors); ok {
+			field := validationErrors[0].Field()
+			return client, exception.New(fmt.Sprintf("%s está inválido", field), 403)
+		} else {
+			return client, exception.New("Campo(s) inválidos", 403)
+		}
 	}
 
 	if client.CPF != clientFound.CPF {
@@ -69,7 +77,12 @@ func (c *ClientModel) Update(client entity.Client) (entity.Client, *exception.Ex
 func (c *ClientModel) Save(client entity.Client) (entity.Client, *exception.Exception) {
 	errFields := service.Validate.Struct(client)
 	if errFields != nil {
-		return client, exception.New("Campo(s) inválidos", 403)
+		if validationErrors, ok := errFields.(validator.ValidationErrors); ok {
+			field := validationErrors[0].Field()
+			return client, exception.New(fmt.Sprintf("%s está inválido", field), 403)
+		} else {
+			return client, exception.New("Campo(s) inválidos", 403)
+		}
 	}
 
 	cpfUsed, _ := c.clientRepository.FindByCPF(client.CPF)
