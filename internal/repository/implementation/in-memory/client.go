@@ -33,6 +33,15 @@ func (c ClientRepository) FindByCPF(cpf string) (entity.Client, *exception.Excep
 	return entity.Client{}, exception.New("Cliente não encontrado", 404)
 }
 
+func (c ClientRepository) FindByEmail(email string) (entity.Client, *exception.Exception) {
+	for _, c := range c.clients {
+		if c.Email == email {
+			return c, nil
+		}
+	}
+	return entity.Client{}, exception.New("Cliente não encontrado", 404)
+}
+
 func (c *ClientRepository) Update(client entity.Client) *exception.Exception {
 	for i, current := range c.clients {
 		if current.ID == client.ID {

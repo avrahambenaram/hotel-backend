@@ -31,6 +31,15 @@ func (c ClientRepository) FindByCPF(cpf string) (entity.Client, *exception.Excep
 	return client, nil
 }
 
+func (c ClientRepository) FindByEmail(email string) (entity.Client, *exception.Exception) {
+	client := entity.Client{}
+	entity.DB.Where("Email = ?", email).Find(&client)
+	if client.CPF == "" {
+		return client, exception.New("Cliente não encontrado", 404)
+	}
+	return client, nil
+}
+
 func (c ClientRepository) Update(client entity.Client) *exception.Exception {
 	_, err := c.FindByID(client.ID)
 	if err != nil {

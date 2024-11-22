@@ -169,6 +169,19 @@ func TestUpdateClientEmailNotValid(t *testing.T) {
 	}
 }
 
+func TestUpdateClientEmailAlreadyUsed(t *testing.T) {
+	assert := assert.New(t)
+	suite := SetupClientSuite()
+	update := suite.client1
+	update.Email = suite.client2.Email
+
+	_, err := suite.clientModel.Update(update)
+
+	if assert.NotNil(err) {
+		assert.Equal(409, err.Status)
+	}
+}
+
 func TestUpdateClientPhoneNotValid(t *testing.T) {
 	assert := assert.New(t)
 	suite := SetupClientSuite()
@@ -206,6 +219,19 @@ func TestSaveClientCPFAlreadyUsed(t *testing.T) {
 	suite := SetupClientSuite()
 	save := suite.clientToSave
 	save.CPF = suite.client1.CPF
+
+	_, err := suite.clientModel.Save(save)
+
+	if assert.NotNil(err) {
+		assert.Equal(409, err.Status)
+	}
+}
+
+func TestSaveClientEmailAlreadyUsed(t *testing.T) {
+	assert := assert.New(t)
+	suite := SetupClientSuite()
+	save := suite.clientToSave
+	save.Email = suite.client1.Email
 
 	_, err := suite.clientModel.Save(save)
 

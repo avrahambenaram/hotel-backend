@@ -29,6 +29,10 @@ func (c *ClientModel) FindByCPF(cpf string) (entity.Client, *exception.Exception
 	return c.clientRepository.FindByCPF(cpf)
 }
 
+func (c *ClientModel) FindByEmail(email string) (entity.Client, *exception.Exception) {
+	return c.clientRepository.FindByEmail(email)
+}
+
 func (c *ClientModel) Update(client entity.Client) (entity.Client, *exception.Exception) {
 	clientFound, err := c.FindByID(client.ID)
 	if err != nil {
@@ -47,6 +51,13 @@ func (c *ClientModel) Update(client entity.Client) (entity.Client, *exception.Ex
 		}
 	}
 
+	if client.Email != clientFound.Email {
+		_, err := c.FindByEmail(client.Email)
+		if err == nil {
+			return client, exception.New("Email já utilizado", 409)
+		}
+	}
+
 	errUpdate := c.clientRepository.Update(client)
 	if errUpdate != nil {
 		return client, errUpdate
@@ -61,9 +72,14 @@ func (c *ClientModel) Save(client entity.Client) (entity.Client, *exception.Exce
 		return client, exception.New("Campo(s) inválidos", 403)
 	}
 
-	clientExists, _ := c.clientRepository.FindByCPF(client.CPF)
-	if clientExists.CPF == client.CPF {
+	cpfUsed, _ := c.clientRepository.FindByCPF(client.CPF)
+	if cpfUsed.CPF == client.CPF {
 		return client, exception.New("CPF de cliente já cadastrado", 409)
+	}
+
+	emailUsed, _ := c.clientRepository.FindByEmail(client.Email)
+	if emailUsed.Email == client.Email {
+		return client, exception.New("Email de cliente já cadastrado", 409)
 	}
 
 	err := c.clientRepository.Save(client)
