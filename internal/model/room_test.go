@@ -5,6 +5,7 @@ import (
 
 	"github.com/avrahambenaram/hotel-backend/internal/entity"
 	"github.com/avrahambenaram/hotel-backend/internal/model"
+	"github.com/avrahambenaram/hotel-backend/internal/repository"
 	inmemory "github.com/avrahambenaram/hotel-backend/internal/repository/implementation/in-memory"
 	"github.com/stretchr/testify/assert"
 )
@@ -112,22 +113,13 @@ func TestGetRoomByNumberSuccess(t *testing.T) {
 	assert.Equal(suite.room1.ID, room.ID)
 }
 
-func TestGetRoomsByInvalidType(t *testing.T) {
-	assert := assert.New(t)
-	suite := SetupRoomSuite()
-
-	_, err := suite.roomModel.FindByType(100)
-
-	if assert.NotNil(err) {
-		assert.Equal(403, err.Status)
-	}
-}
-
 func TestGetRoomsByFamilyType(t *testing.T) {
 	assert := assert.New(t)
 	suite := SetupRoomSuite()
 
-	rooms, _ := suite.roomModel.FindByType(uint(entity.FamilyRoom))
+	rooms := suite.roomModel.FindByQuery(repository.RoomQuery{
+		Type: uint(entity.FamilyRoom),
+	})
 
 	assert.Len(rooms, 2)
 }
@@ -136,7 +128,9 @@ func TestGetRoomsBySimpleType(t *testing.T) {
 	assert := assert.New(t)
 	suite := SetupRoomSuite()
 
-	rooms, _ := suite.roomModel.FindByType(uint(entity.SimpleRoom))
+	rooms := suite.roomModel.FindByQuery(repository.RoomQuery{
+		Type: uint(entity.SimpleRoom),
+	})
 
 	assert.Len(rooms, 1)
 }
@@ -145,9 +139,22 @@ func TestGetRoomsBySuiteType(t *testing.T) {
 	assert := assert.New(t)
 	suite := SetupRoomSuite()
 
-	rooms, _ := suite.roomModel.FindByType(uint(entity.Suite))
+	rooms := suite.roomModel.FindByQuery(repository.RoomQuery{
+		Type: uint(entity.Suite),
+	})
 
 	assert.Len(rooms, 0)
+}
+
+func TestGetRoomsByPrice(t *testing.T) {
+	assert := assert.New(t)
+	suite := SetupRoomSuite()
+
+	rooms := suite.roomModel.FindByQuery(repository.RoomQuery{
+		PriceDiary: 120,
+	})
+
+	assert.Len(rooms, 2)
 }
 
 func TestUpdateRoomNumberAlreadyInUse(t *testing.T) {

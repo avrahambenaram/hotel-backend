@@ -20,20 +20,16 @@ func (c *RoomModel) FindAll() []entity.HotelRoom {
 	return c.roomRepository.FindAll()
 }
 
+func (c *RoomModel) FindByQuery(query repository.RoomQuery) []entity.HotelRoom {
+	return c.roomRepository.FindByQuery(query)
+}
+
 func (c *RoomModel) FindByID(id uint) (entity.HotelRoom, *exception.Exception) {
 	return c.roomRepository.FindByID(id)
 }
 
 func (c *RoomModel) FindByNumber(number int) (entity.HotelRoom, *exception.Exception) {
 	return c.roomRepository.FindByNumber(number)
-}
-
-func (c *RoomModel) FindByType(roomType uint) ([]entity.HotelRoom, *exception.Exception) {
-	roomTypeConverted := entity.RoomType(roomType)
-	if !roomTypeConverted.IsValid() {
-		return []entity.HotelRoom{}, exception.New("Tipo de quarto inválido", 403)
-	}
-	return c.roomRepository.FindByType(roomTypeConverted), nil
 }
 
 func (c *RoomModel) Update(room entity.HotelRoom) (entity.HotelRoom, *exception.Exception) {

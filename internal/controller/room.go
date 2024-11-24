@@ -8,6 +8,7 @@ import (
 	"github.com/avrahambenaram/hotel-backend/internal/entity"
 	"github.com/avrahambenaram/hotel-backend/internal/middleware"
 	"github.com/avrahambenaram/hotel-backend/internal/model"
+	"github.com/avrahambenaram/hotel-backend/internal/repository"
 )
 
 type RoomController struct {
@@ -24,7 +25,7 @@ func NewRoomController(roomModel *model.RoomModel) *RoomController {
 
 	mux.Handle(
 		"GET /{$}",
-		http.HandlerFunc(roomController.findAll),
+		http.HandlerFunc(roomController.query),
 	)
 	mux.Handle(
 		"GET /id/{ID}",
@@ -35,10 +36,6 @@ func NewRoomController(roomModel *model.RoomModel) *RoomController {
 	mux.Handle(
 		"GET /number/{number}",
 		http.HandlerFunc(roomController.findByNumber),
-	)
-	mux.Handle(
-		"GET /type/{type}",
-		http.HandlerFunc(roomController.findByType),
 	)
 	mux.Handle(
 		"POST /add",
@@ -64,7 +61,38 @@ func NewRoomController(roomModel *model.RoomModel) *RoomController {
 	return roomController
 }
 
-func (c *RoomController) findAll(w http.ResponseWriter, r *http.Request) {
+func (c *RoomController) query(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	capacityStr := query.Get("capacity")
+	typeStr := query.Get("type")
+	priceDiaryStr := query.Get("priceDiary")
+	var capacity uint
+	var roomType uint
+	var priceDiary float32
+
+	if capacityStr != "" {
+		capacityConverted, _ := strconv.Atoi(capacityStr)
+		capacity = uint(capacityConverted)
+	}
+	if typeStr != "" {
+		typeConverted, _ := strconv.Atoi(typeStr)
+		roomType = uint(typeConverted)
+	}
+	if priceDiaryStr != "" {
+		priceConverted, _ := strconv.ParseFloat(priceDiaryStr, 32)
+		priceDiary = float32(priceConverted)
+	}
+	if capacity != 0 || roomType != 0 || priceDiary != 0 {
+		rooms := c.roomModel.FindByQuery(repository.RoomQuery{
+			Capacity:   capacity,
+			Type:       roomType,
+			PriceDiary: priceDiary,
+		})
+		ctx := context.WithValue(r.Context(), "json", rooms)
+		*r = *r.WithContext(ctx)
+		return
+	}
+
 	rooms := c.roomModel.FindAll()
 
 	ctx := context.WithValue(r.Context(), "json", rooms)
@@ -99,24 +127,6 @@ func (c *RoomController) findByNumber(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := context.WithValue(r.Context(), "json", room)
-	*r = *r.WithContext(ctx)
-}
-
-func (c *RoomController) findByType(w http.ResponseWriter, r *http.Request) {
-	pathType := r.PathValue("type")
-	roomType, err := strconv.Atoi(pathType)
-	if err != nil {
-		http.Error(w, "Insert a valid type", http.StatusForbidden)
-		return
-	}
-
-	rooms, errFind := c.roomModel.FindByType(uint(roomType))
-	if errFind != nil {
-		http.Error(w, errFind.Message, errFind.Status)
-		return
-	}
-
-	ctx := context.WithValue(r.Context(), "json", rooms)
 	*r = *r.WithContext(ctx)
 }
 
