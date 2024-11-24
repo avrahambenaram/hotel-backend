@@ -40,6 +40,9 @@ func (c *ReservationModel) Save(reservation entity.Reservation) (entity.Reservat
 	if c.isRoomAlreadyReserved(reservation) {
 		return reservation, exception.New("Já há uma reserva no horário solicitado", 409)
 	}
+	if reservation.CheckIn.Unix() > reservation.CheckOut.Unix() {
+		return reservation, exception.New("Reserva não pode ter check-out após o check-in", 403)
+	}
 
 	err := c.reservationRepository.Save(reservation)
 	if err != nil {

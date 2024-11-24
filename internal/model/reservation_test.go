@@ -134,6 +134,19 @@ func TestSaveReservationAlreadyReserved(t *testing.T) {
 	}
 }
 
+func TestSaveReservationCheckOutBeforeCheckIn(t *testing.T) {
+	assert := assert.New(t)
+	suite := SetupReservationSuite()
+	save := suite.reservationToSave
+	save.CheckOut = save.CheckIn.Add(time.Hour * -24)
+
+	_, err := suite.reservationModel.Save(save)
+
+	if assert.NotNil(err) {
+		assert.Equal(403, err.Status)
+	}
+}
+
 func TestSaveReservationSuccess(t *testing.T) {
 	assert := assert.New(t)
 	suite := SetupReservationSuite()
