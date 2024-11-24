@@ -11,7 +11,7 @@ type ReservationRepository struct{}
 
 func (c ReservationRepository) FindAll() []entity.Reservation {
 	reservations := []entity.Reservation{}
-	entity.DB.Find(&reservations)
+	entity.DB.Preload("Room").Preload("Client").Find(&reservations)
 	return reservations
 }
 
@@ -26,7 +26,7 @@ func (c ReservationRepository) FindByID(id uint) (entity.Reservation, *exception
 
 func (c ReservationRepository) FindByClientAndRoom(clientID uint, roomID uint) []entity.Reservation {
 	reservations := []entity.Reservation{}
-	entity.DB.Where("client_id = ? AND room_id = ?", clientID, roomID).Find(&reservations)
+	entity.DB.Preload("Room").Preload("Client").Where("client_id = ? AND room_id = ?", clientID, roomID).Find(&reservations)
 	return reservations
 }
 
@@ -38,7 +38,7 @@ func (c ReservationRepository) FindByClient(clientID uint) []entity.Reservation 
 
 func (c ReservationRepository) FindByRoom(roomID uint) []entity.Reservation {
 	reservations := []entity.Reservation{}
-	entity.DB.Where("room_id = ?", roomID).Find(&reservations)
+	entity.DB.Preload("Room").Preload("Client").Where("room_id = ?", roomID).Find(&reservations)
 	return reservations
 }
 
