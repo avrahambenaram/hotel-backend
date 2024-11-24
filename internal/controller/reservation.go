@@ -40,7 +40,7 @@ func NewReservationController(reservationModel *model.ReservationModel) *Reserva
 		),
 	)
 	mux.Handle(
-		"DELETE /id/{ID}",
+		"DELETE /{ID}",
 		middleware.GetId(
 			http.HandlerFunc(reservationController.findByID),
 		),
